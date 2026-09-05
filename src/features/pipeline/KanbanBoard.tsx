@@ -11,7 +11,7 @@ import {
 import { useDefaultPipeline } from '@/hooks/usePipeline'
 import { useDeals, useMoveDeal } from '@/hooks/useDeals'
 import { StageColumn } from './StageColumn'
-import { DealCard } from './DealCard'
+import { DealCardOverlay } from './DealCard'
 import { LostReasonDialog } from './LostReasonDialog'
 import { NewDealDialog } from './NewDealDialog'
 import { Button } from '@/components/Button'
@@ -108,7 +108,7 @@ export function KanbanBoard() {
               <StageColumn key={stage.id} stage={stage} deals={dealsByStage.get(stage.id) ?? []} />
             ))}
           </div>
-          <DragOverlay>{activeDeal ? <DealCard deal={activeDeal} /> : null}</DragOverlay>
+          <DragOverlay>{activeDeal ? <DealCardOverlay deal={activeDeal} /> : null}</DragOverlay>
         </DndContext>
       )}
 
