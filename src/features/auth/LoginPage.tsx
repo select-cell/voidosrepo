@@ -37,6 +37,7 @@ export function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="E-Mail"
+            name="email"
             type="email"
             autoComplete="email"
             value={email}
@@ -45,6 +46,7 @@ export function LoginPage() {
           />
           <Input
             label="Passwort"
+            name="password"
             type="password"
             autoComplete="current-password"
             value={password}

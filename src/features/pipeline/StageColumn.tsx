@@ -5,9 +5,11 @@ import { DealCard } from './DealCard'
 interface StageColumnProps {
   stage: Stage
   deals: DealWithContact[]
+  stages: Stage[]
+  onMoveDeal: (dealId: string, targetStageId: string) => void
 }
 
-export function StageColumn({ stage, deals }: StageColumnProps) {
+export function StageColumn({ stage, deals, stages, onMoveDeal }: StageColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id })
 
   const totalValue = deals.reduce((sum, d) => sum + (d.value ? Number(d.value) : 0), 0)
@@ -31,7 +33,7 @@ export function StageColumn({ stage, deals }: StageColumnProps) {
         }`}
       >
         {deals.map((deal) => (
-          <DealCard key={deal.id} deal={deal} />
+          <DealCard key={deal.id} deal={deal} stages={stages} onMoveDeal={onMoveDeal} />
         ))}
         {deals.length === 0 && (
           <p className="mt-2 text-center text-xs text-slate-400">Keine Deals</p>

@@ -52,13 +52,11 @@ export function KanbanBoard() {
     setActiveDeal(deal ?? null)
   }
 
-  function handleDragEnd(event: DragEndEvent) {
-    setActiveDeal(null)
-    const { active, over } = event
-    if (!over) return
-
-    const dealId = String(active.id)
-    const targetStageId = String(over.id)
+  // Gemeinsame Logik für "Deal in Stage X verschieben" - wird sowohl vom
+  // Drag&Drop-Handler als auch vom Stage-Dropdown auf der Karte genutzt
+  // (letzteres funktioniert auch dann, wenn die Ziel-Spalte außerhalb des
+  // sichtbaren Bereichs liegt und nicht ins Board gescrollt wurde).
+  function requestMoveDeal(dealId: string, targetStageId: string) {
     const deal = deals?.find((d) => d.id === dealId)
     if (!deal || deal.stage_id === targetStageId) return
 
@@ -69,6 +67,13 @@ export function KanbanBoard() {
     }
 
     moveDeal.mutate({ dealId, stageId: targetStageId })
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    setActiveDeal(null)
+    const { active, over } = event
+    if (!over) return
+    requestMoveDeal(String(active.id), String(over.id))
   }
 
   if (pipelineLoading) {
@@ -105,7 +110,13 @@ export function KanbanBoard() {
         <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <div className="flex flex-1 gap-4 overflow-x-auto pb-4">
             {pipelineData.stages.map((stage) => (
-              <StageColumn key={stage.id} stage={stage} deals={dealsByStage.get(stage.id) ?? []} />
+              <StageColumn
+                key={stage.id}
+                stage={stage}
+                deals={dealsByStage.get(stage.id) ?? []}
+                stages={pipelineData.stages}
+                onMoveDeal={requestMoveDeal}
+              />
             ))}
           </div>
           <DragOverlay>{activeDeal ? <DealCardOverlay deal={activeDeal} /> : null}</DragOverlay>

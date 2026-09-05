@@ -1,5 +1,5 @@
 import { useDraggable } from '@dnd-kit/core'
-import type { DealWithContact } from '@/lib/database.types'
+import type { DealWithContact, Stage } from '@/lib/database.types'
 import { useUiStore } from '@/store/useUiStore'
 
 const CURRENCY_FORMAT = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' })
@@ -23,7 +23,13 @@ function DealCardContent({ deal }: { deal: DealWithContact }) {
   )
 }
 
-export function DealCard({ deal }: { deal: DealWithContact }) {
+interface DealCardProps {
+  deal: DealWithContact
+  stages: Stage[]
+  onMoveDeal: (dealId: string, targetStageId: string) => void
+}
+
+export function DealCard({ deal, stages, onMoveDeal }: DealCardProps) {
   const openDeal = useUiStore((s) => s.openDeal)
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: deal.id,
@@ -50,6 +56,23 @@ export function DealCard({ deal }: { deal: DealWithContact }) {
       }`}
     >
       <DealCardContent deal={deal} />
+
+      {/* Zuverlässige Alternative zum Drag&Drop: funktioniert unabhängig
+          davon, ob die Ziel-Spalte gerade sichtbar/ins Board gescrollt ist,
+          und unabhängig vom Eingabegerät (Maus/Trackpad/Touch). */}
+      <select
+        value={deal.stage_id}
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onChange={(e) => onMoveDeal(deal.id, e.target.value)}
+        className="mt-2 w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600"
+      >
+        {stages.map((stage) => (
+          <option key={stage.id} value={stage.id}>
+            Stage: {stage.name}
+          </option>
+        ))}
+      </select>
     </div>
   )
 }
