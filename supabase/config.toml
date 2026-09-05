@@ -1,0 +1,24 @@
+project_id = "voidos-sales-crm"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]
+
+# Die Lead-Intake Function wird von einem externen Signup-System bzw. dem
+# öffentlichen /signup-Formular ohne eingeloggte Supabase-Session
+# aufgerufen -> JWT-Verifizierung für diese Function deaktivieren.
+# (Die Function prüft ihre eigene Autorisierung selbst, siehe index.ts.)
+[functions.lead-intake]
+verify_jwt = false

@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA-Fallback: alle Routen (z.B. /signup, /pipeline/deals/xyz) an index.html
+# durchreichen, damit React Router beim Direktaufruf/Reload greift.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
